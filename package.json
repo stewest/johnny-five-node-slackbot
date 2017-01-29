@@ -1,0 +1,15 @@
+{
+  "name": "johnny-five-node-slackbot",
+  "version": "0.1.0",
+  "description": "A NodeJS Arduino integration with SlackBot but none of this work is my own. Please see the contributors in the johnny-five and node-slackbot repos.",
+  "author": "Stew West",
+  "dependencies": {
+    "johnny-five": "^0.10.6",
+    "node-slackbot": "0.0.6"
+  },
+  "repository": "git@github.com:stewest/johnny-five-node-slackbot.git",
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.10.0"
+  }
+}
