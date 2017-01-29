@@ -11,9 +11,8 @@ https://github.com/rwaldron/johnny-five
 https://github.com/rmcdaniel/node-slackbot
 - Slackbot for node.js using RTM API.
 
-What I did was:
-- npm install --save johnny-five
-- npm install --save node-slackbot
+What to do:
+- npm install
 - Go to https://api.slack.com/slack-apps and create your app with testing tokens.
 
 Follow most of the relevent instructions from both repos above.
