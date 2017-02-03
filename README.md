@@ -15,6 +15,7 @@ As mentioned here: http://lightningtalks.me/simple-slack-of-things-nodejsslackar
 
 What to do:
 
+    From https://github.com/rwaldron/johnny-five#setup-and-assemble-arduino
     - Download Arduino IDE
     - Plug in your Arduino or Arduino compatible microcontroller via USB
     - Open the Arduino IDE, select: File > Examples > Firmata > StandardFirmataPlus
