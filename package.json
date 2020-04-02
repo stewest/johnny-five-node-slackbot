@@ -4,6 +4,7 @@
   "description": "A NodeJS Arduino integration with SlackBot but none of this work is my own. Please see the contributors in the johnny-five and node-slackbot repos.",
   "author": "Stew West",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "johnny-five": "^1.4.0",
     "node-slackbot": "0.0.8"
   },

@@ -1,7 +1,8 @@
-.DS_Store
+.gitignore.DS_Store
 .nyc_output
 node_modules
 npm-debug.log
 wip/
 release
 coverage
+.env

@@ -27,14 +27,14 @@ If the upload was successful, the board is now prepared and you can close the Ar
 Then from this repo:
 - npm install
 - Go to https://api.slack.com/slack-apps and create your app with testing tokens.
-
-Follow most of the relevent instructions from both repos above.
-
-Important to upload, from the Arduino IDE 
-
-Add in your Slack Token.
-
-Connect the Arduino Uno via USB cable
+- Create and Add SLACK_TOKEN to .env file
+-- Like SLACK_TOKEN='xxxxxxx0000000xxxxxxx00000000000.....'
 
 Run:
 - node slackbot-app.js
+
+If you haven't Added in your Slack Token, you'll probably see this error:
+
+"Uncaught TypeError: Parameter "url" must be a string, not undefined:
+
+Check your Slack token, it may be missing or needs replacing. https://api.slack.com/custom-integrations/legacy-tokens (As Slacbkbot uses the old RTM tokens)

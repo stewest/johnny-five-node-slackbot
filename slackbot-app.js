@@ -1,5 +1,8 @@
+require('dotenv').config();
+const token = process.env['SLACK_TOKEN'];
+
 var slackbot = require('node-slackbot');
-var bot = new slackbot('Your-Token-here');
+var bot = new slackbot(token);
 
 var five = require("johnny-five");
 var board = new five.Board();
@@ -46,7 +49,7 @@ piezo.play({
 
   bot.use(function(message, cb) {
     if ('message' == message.type) {
-      console.log(message.user + ' said: ' + message.text + ' of Type: ' + message.type);
+      console.log(message.user + ' said: ' + message.text);
     }
 
     if (message.text == 'Turn on') {
