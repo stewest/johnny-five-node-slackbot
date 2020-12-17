@@ -1,87 +1,108 @@
 require('dotenv').config();
 const token = process.env['SLACK_TOKEN'];
+const userToken = process.env['SLACK_USER'];
 
-var slackbot = require('node-slackbot');
-var bot = new slackbot(token);
+const slackbot = require('node-slackbot');
+const bot = new slackbot(token);
 
-var five = require("johnny-five");
-var board = new five.Board();
+const { Board, Leds, Led } = require("johnny-five");
+const board = new Board();
 
 board.on("ready", function() {
   // I've put 3 separate LEDs on Digital pins 3 Blue, 5 Green, 6 Red.
-  var array = new five.Leds([3, 5, 6]);
+  const rgb = new Led.RGB([9, 10, 11]);
 
-  // Creates a piezo object and defines the pin to be used for the signal. Pin 8.
-   var piezo = new five.Piezo(8);
+  let index = 0;
+  const rainbow = ["FF0000", "FF7F00", "FFFF00", "00FF00", "0000FF", "4B0082", "8F00FF"];
+  const rgbOn = new Leds([12]);
+  const array = new Leds([3, 5, 6]);
+  const blue = new Leds([3]);
+  const green = new Leds([5]);
+  const red = new Leds([6]);
+  const deployComplete = new Leds([3, 5]);
 
-  // Injects the piezo into the repl
-  board.repl.inject({
-    piezo: piezo
-  });
+  const rainbox = function () {
+    rgbOn.on();
 
-// Plays a song
-piezo.play({
-  // song is composed by an array of pairs of notes and beats
-  // The first argument is the note (null means "no note")
-  // The second argument is the length of time (beat) of the note (or non-note)
-  song: [
-    ["C4", 1 / 4],
-    ["D4", 1 / 4],
-    ["F4", 1 / 4],
-    ["D4", 1 / 4],
-    ["A4", 1 / 4],
-    [null, 1 / 4],
-    ["A4", 1],
-    ["G4", 1],
-    [null, 1 / 2],
-    ["C4", 1 / 4],
-    ["D4", 1 / 4],
-    ["F4", 1 / 4],
-    ["D4", 1 / 4],
-    ["G4", 1 / 4],
-    [null, 1 / 4],
-    ["G4", 1],
-    ["F4", 1],
-    [null, 1 / 2]
-  ],
-  tempo: 100
-});
+    board.loop(250, () => {
+      rgb.color(rainbow[index++]);
+      if (index === rainbow.length) {
+        index = 0;
+      }
+    });
 
-  bot.use(function(message, cb) {
-    if ('message' == message.type) {
-      console.log(message.user + ' said: ' + message.text);
+    setTimeout(() => {
+      rgbOn.off();
+    }, 5000);
+    console.log('Ended Rainbow');
+  }
+
+  const pulseLed = function (colour) {
+    colour.pulse();
+
+    setTimeout(function () {
+      colour.stop().off();
+    }, 5000);
+  }
+
+  pulseLed(array);
+
+  const showMsg = function (msg) {
+    console.log(msg.user + ' said: ' + msg.text);
+  }
+
+  bot.use(function (message, cb) {
+    const user = userToken;
+
+    if (message.text) {
+      if (message.text.indexOf(user)) {
+        pulseLed(green);
+        // showMsg(message.text);
+      }
+    }
+
+    if (message.text) {
+      if (message.text.indexOf('Stew') >= 0 || message.text.indexOf('stew') >= 0) {
+        pulseLed(blue);
+        showMsg(message);
+      }
+    }
+
+    if (message.text == 'complete' || message.text == 'Travis CI: Build Passed') {
+      rainbox();
+      showMsg(message);
+    }
+
+    if (message.text == 'failed' || message.text == 'Travis CI: Build Failed') {
+      pulseLed(red);
+      showMsg(message);
+    }
+
+    if (message.text == 'leads') {
+      rainbox();
+      showMsg(message);
+    }
+
+    if (message.text == 'You asked me to remind you to') {
+      rainbox();
+      showMsg(message);
+    }
+
+    if (message.text == 'minute until this event') {
+      rainbox();
+      showMsg(message);
     }
 
     if (message.text == 'Turn on') {
-      array.pulse();
+      pulseLed(array);
+    }
 
-      piezo.play({
-        // song is composed by a string of notes
-        // a default beat is set, and the default octave is used
-        // any invalid note is read as "no note"
-        song: "C D F D A - A A A A G G G G - - C D F D G - G G G G F F F F - -",
-        beats: 1 / 4,
-        tempo: 100
-      });
-
-    } else if (message.text == 'Turn off') {
-      array.stop();
-      array.off();
-    } else if (message.text == 'Play song') {
-      // Plays the same song with a string representation
-      piezo.play({
-        // song is composed by a string of notes
-        // a default beat is set, and the default octave is used
-        // any invalid note is read as "no note"
-        song: "C D F D A - A A A A G G G G - - C D F D G - G G G G F F F F - -",
-        beats: 1 / 4,
-        tempo: 100
-      });
+    if (message.text == 'Turn off') {
+      array.stop().off();
     }
 
     cb();
   });
 
   bot.connect();
-
 });
